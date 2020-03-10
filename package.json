@@ -37,11 +37,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "mongoose": "4.3.4",
-    "mocha": "2.3.4",
-    "chai": "3.4.1"
+    "jest": "^25.1.0",
+    "mongodb-memory-server": "^6.3.2",
+    "mongoose": "^5.9.4"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha tests/*.js -R spec --ui bdd --timeout 5000"
+    "test": "./node_modules/.bin/jest --watchAll --no-cache --runInBand --config ./jest.config.js",
+    "test:cover": "./node_modules/.bin/jest --coverage --watchAll --runInBand --config jest.config.server.js"
   }
 }
