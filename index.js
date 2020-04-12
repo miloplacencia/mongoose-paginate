@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * @package mongoose-paginate
@@ -25,8 +25,8 @@ async function paginate(query, options, callback) {
   let populate = options.populate;
   let lean = options.lean || false;
   let leanWithId =
-    typeof options.leanWithId === 'boolean' ? options.leanWithId : true;
-  let limit = typeof options.limit === 'number' ? options.limit : 10;
+    typeof options.leanWithId === "boolean" ? options.leanWithId : true;
+  let limit = typeof options.limit === "number" ? options.limit : 10;
   let page, offset, skip, promises;
 
   if (options.offset) {
@@ -41,15 +41,18 @@ async function paginate(query, options, callback) {
     skip = offset;
   }
 
-  let docsQuery = this.find(query)
-    .select(select)
-    .sort(sort)
-    .skip(skip)
-    .limit(limit)
-    .lean(lean);
+  let docsQuery =
+    limit >= 0
+      ? this.find(query)
+          .select(select)
+          .sort(sort)
+          .skip(skip)
+          .limit(limit)
+          .lean(lean)
+      : this.find(query).select(select).sort(sort).lean(lean);
 
   if (populate) {
-    [].concat(populate).forEach(item => {
+    [].concat(populate).forEach((item) => {
       docsQuery.populate(item);
     });
   }
@@ -60,15 +63,15 @@ async function paginate(query, options, callback) {
   };
 
   if (lean && leanWithId) {
-    promises.docs = promises.docs.then(docs =>
-      docs.map(doc => ({
+    promises.docs = promises.docs.then((docs) =>
+      docs.map((doc) => ({
         ...doc,
         id: String(doc._id),
-      })),
+      }))
     );
   }
 
-  promises = Object.keys(promises).map(x => promises[x]);
+  promises = Object.keys(promises).map((x) => promises[x]);
 
   const [docs, count] = await Promise.all(promises);
 
@@ -84,7 +87,7 @@ async function paginate(query, options, callback) {
     result.page = page;
     result.pages = Math.ceil(count / limit) || 1;
   }
-  if (typeof callback === 'function') {
+  if (typeof callback === "function") {
     return callback(null, result);
   }
 
@@ -95,7 +98,7 @@ async function paginate(query, options, callback) {
  * @param {Schema} schema
  */
 
-module.exports = function(schema) {
+module.exports = function (schema) {
   schema.statics.paginate = paginate;
 };
 
